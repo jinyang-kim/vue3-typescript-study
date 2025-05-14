@@ -38,8 +38,7 @@ interface Member {
                v-bind:name="member.name"
                v-bind:email="member.email"
                v-model:points="member.points"
-               v-bind:note="member.note"
-               v-on:incrementPoint="onIncrementPoint" />
+               v-bind:note="member.note" />
   </section>
 </template>
 
