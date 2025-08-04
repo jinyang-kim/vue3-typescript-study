@@ -2,29 +2,37 @@
 import {type City, useWeatherStore} from '@/stores/weather.ts';
 import {computed} from 'vue';
 
-// store 가져오기
-const weatherStore = useWeatherStore();
-// prepareCityList action 호출
-weatherStore.prepareCityList();
+interface Props {
+  id: string;
+}
 
-const cityList = computed(
-  (): Map<string, City> => {
-    return weatherStore.cityList;
+const props = defineProps<Props>();
+const weatherStore = useWeatherStore();
+weatherStore.recieveWeatherInfo(props.id);
+const isLoading = computed(
+  (): boolean => {
+    return weatherStore.isLoading;
   }
-)
+);
+const selectedCity = computed(
+  (): City => {
+    return weatherStore.selectedCity;
+  }
+);
+const weatherDescription = computed(
+  (): string => {
+    return weatherStore.weatherDescription;
+  }
+);
 </script>
 
 <template>
-  <section>
-    <h2>도시 리스트</h2>
-    <ul>
-      <li v-for="[id, city] in cityList" v-bind:key="id">
-        <RouterLink v-bind:to="{name: 'WeatherInfo', params: {id: id}}">
-          {{city.name}}의 날씨
-        </RouterLink>
-      </li>
-    </ul>
+  <p v-if="isLoading">데이터 취득 중...</p>
+  <section v-else>
+    <h2>{{selectedCity.name}}</h2>
+    <p>{{weatherDescription}}</p>
   </section>
+  <p>리스트로 <RouterLink v-bind:to="{name: 'CityList'}">돌아가기</RouterLink></p>
 </template>
 
 <style scoped>
